@@ -155,7 +155,8 @@ button.cd:hover{transform:translateY(-2px);border-color:var(--xp)}
 .lr.me{border-color:var(--acc);background:#2a2014}
 .lr i{font:700 12px var(--mono);font-style:normal;color:var(--mute)}
 .lr b{overflow-wrap:anywhere}
-.lr span{font-size:11.5px;color:var(--mute)}
+.lr span{font:600 10px var(--display);letter-spacing:.12em;text-transform:uppercase;border:1px solid;border-radius:10px;padding:2px 8px;white-space:nowrap}
+.lr b small{display:block;font:500 11px var(--body);color:var(--mute)}
 .lr em{font:700 12px var(--mono);font-style:normal;color:var(--gold);white-space:nowrap}
 @keyframes rise{from{opacity:0;transform:translateY(14px) scale(.98)}}
 @keyframes drop{from{opacity:0;transform:translateY(-8px)}}
@@ -163,7 +164,7 @@ button.cd:hover{transform:translateY(-2px);border-color:var(--xp)}
 @keyframes pulse{50%{transform:scale(1.07)}}
 @media (prefers-reduced-motion:reduce){.card,.acts.grid button.b,#say,#k3.rdy,button.b.shine::after{animation:none}}
 button.b.tile{padding:8px 10px;gap:8px;font-size:14px}
-@media (max-width:640px){.acts.grid{grid-template-columns:1fr;gap:8px}.acts.grid button.b{flex-direction:row;align-items:center;padding:12px}.acts.grid button.b em{margin-top:0}.card{padding:16px}.bigc{flex-direction:column;text-align:center}#ho{font-size:22px}button.b.tile small{display:none}button.b.tile{flex-direction:column;gap:4px;padding:8px 4px;font-size:12px;text-align:center}.wide-only{display:none}.lr{grid-template-columns:22px minmax(0,1fr) auto}.lr span{display:none}h1{font-size:clamp(28px,8.4vw,40px)}}
+@media (max-width:640px){.acts.grid{grid-template-columns:1fr;gap:8px}.acts.grid button.b{flex-direction:row;align-items:center;padding:12px}.acts.grid button.b em{margin-top:0}.card{padding:16px}.bigc{flex-direction:column;text-align:center}#ho{font-size:22px}button.b.tile small{display:none}button.b.tile{flex-direction:column;gap:4px;padding:8px 4px;font-size:12px;text-align:center}.wide-only{display:none}.lr{grid-template-columns:20px minmax(0,1fr) auto auto;gap:6px;padding:7px 8px}h1{font-size:clamp(28px,8.4vw,40px)}}
 </style>
 <div id="wrap">
   <canvas id="gl"></canvas>
@@ -811,9 +812,9 @@ const LORE=[
 const DIFF=[{n:'Лёгкая',d:'врагов меньше, бьют слабее; звёзд −30%',hp:.8,dm:.7,sp:.85,st:.7},{n:'Обычная',d:'как задумано',hp:1.25,dm:1,sp:1.15,st:1},{n:'Сложная',d:'враги крепче и злее; звёзд +50%',hp:1.75,dm:1.3,sp:1.4,st:1.5},{n:'Кошмар',d:'для тех, кому всё ещё легко; звёзд ×2,2',hp:2.5,dm:1.65,sp:1.65,st:2.2}];
 /* ================= ИГРА ================= */
 const cv=$('cv'),cx=cv.getContext('2d');let W=300,H=300;
-function loadMeta(){let m=null;try{m=JSON.parse(localStorage.getItem('pelmen6'))}catch(e){}m=Object.assign({stars:0,up:{},chars:{pelmen:1},seen:{},best:0,run:null,wins:0,last:'pelmen',gfx:-1,skins:{},skin:{},cards:{},won:{},snd:1,mus:1,diff:1,nick:'',rec:null,v:7},m&&typeof m=='object'?m:{});
+function loadMeta(){let m=null;try{m=JSON.parse(localStorage.getItem('pelmen6'))}catch(e){}m=Object.assign({stars:0,up:{},chars:{pelmen:1},seen:{},best:0,run:null,wins:0,last:'pelmen',gfx:-1,skins:{},skin:{},cards:{},won:{},snd:1,mus:1,diff:1,nick:'',rec:null,uid:'',v:7},m&&typeof m=='object'?m:{});
  /* сохранение могло устареть или побиться: проверяем всё, от чего зависит запуск */
- if(!CH[m.last])m.last='pelmen';if(!m.chars||typeof m.chars!='object')m.chars={pelmen:1};m.chars.pelmen=1;if(!m.up||typeof m.up!='object')m.up={};if(!m.seen||typeof m.seen!='object')m.seen={};m.stars=Math.max(0,+m.stars||0);m.best=+m.best||0;m.wins=+m.wins||0;m.gfx=m.gfx>=0&&m.gfx<=2?m.gfx|0:-1;m.snd=m.snd===0?0:1;m.mus=m.mus===0?0:1;m.diff=m.diff>=0&&m.diff<=3?m.diff|0:1;m.nick=typeof m.nick=='string'?m.nick.slice(0,16):'';if(!m.rec||typeof m.rec!='object'||!(m.rec.w>=1))m.rec=null;
+ if(!CH[m.last])m.last='pelmen';if(!m.chars||typeof m.chars!='object')m.chars={pelmen:1};m.chars.pelmen=1;if(!m.up||typeof m.up!='object')m.up={};if(!m.seen||typeof m.seen!='object')m.seen={};m.stars=Math.max(0,+m.stars||0);m.best=+m.best||0;m.wins=+m.wins||0;m.gfx=m.gfx>=0&&m.gfx<=2?m.gfx|0:-1;m.snd=m.snd===0?0:1;m.mus=m.mus===0?0:1;m.diff=m.diff>=0&&m.diff<=3?m.diff|0:1;m.nick=typeof m.nick=='string'?m.nick.slice(0,16):'';m.uid=typeof m.uid=='string'&&/^[a-z0-9]{6,40}$/.test(m.uid)?m.uid:'';if(!m.rec||typeof m.rec!='object'||!(m.rec.w>=1))m.rec=null;
  /* в седьмой версии глав стало десять: старый незаконченный забег и отметки о просмотренных вступлениях не подходят */
  if(m.v!==7){m.v=7;m.run=null;m.seen={};m.best=0}
  for(const k of['skins','skin','cards','won'])if(!m[k]||typeof m[k]!='object'||Array.isArray(m[k]))m[k]={};
@@ -824,7 +825,7 @@ function saveMeta(){try{localStorage.setItem('pelmen6',JSON.stringify(META))}cat
 let META=loadMeta(),G={z:0,ngp:0,ph:'menu',t:0},P=null,Zc=ZN[0],PR=[];
 let en=[],bul=[],eb=[],pt=[],num=[],dr=[],bm=[],ebm=[],pud=[],dcl=[],later=[],objs=[],vf=[],bossL=[],corp=[],deb=[];
 let paused=true,T=0,shk=0,sayT=0,ldx=0,ldy=1,hudSig='',WM=1,FD=0,CM=null,PVS=null,ZD=0,epud=[];
-const DF=()=>DIFF[G.df==null?1:G.df],zd=()=>G.end?(G.w-1)*.5:G.z*6/(ZN.length-1),ZT=()=>G.end?40:Zc.T;
+const DF=()=>DIFF[G.df==null?1:G.df],zd=()=>G.end?(G.w-1)*.5+(G.zo||0):G.z*6/(ZN.length-1),ZT=()=>G.end?40:Zc.T;
 const GW=(WW/44|0)+2,GH=(WH/44|0)+2,GHD=new Int16Array(GW*GH),GNX=new Int16Array(600);
 /* смена места действия идёт через затемнение: кадр на чёрный экран, потом сборка зоны и плавное проявление */
 function fadeStart(){const f=$('fd');f.style.transition='none';f.style.opacity=1;FD=2}
@@ -837,8 +838,8 @@ function recalc(){const c=CH[P.ch],m=META.up,p=id=>P.ps[id]||0;let ms=1,mh=0,mt=
  P.mhp=Math.max(20,Math.round((100+15*p('hp')+10*(m.mhp||0)+(c.hp||0)+mh)*Math.pow(CURHP,P.cur||0)));P.rg=.22*p('rg');P.mag=110*(1+.25*p('mg'))*(1+.15*(m.mmg||0));P.arm=.7*p('ar')+(c.ar||0);P.area=(1+.08*p('area'))*(c.area||1);
  P.crit=.05+.05*p('cr')+(c.cr||0);P.gm=1+.12*p('gd');P.xm=(1+.08*p('xp'))*(1+.06*(m.mxp||0))*(c.xp||1)*cb;P.pc=Math.floor(p('pc'));P.dbl=.08*p('dbl');P.vamp=.03*p('vamp');P.th=15*p('th');P.bn=.05*p('bn');P.fr=.04*p('fr');P.lk=.1*p('lk');P.dsl=p('ds');P.dcd=2.4*Math.pow(.9,p('ds'))}
 function newRun(ch,end){const m=META.up;META.last=ch;G={z:0,ngp:0,df:META.diff,end:end?1:0,w:1};saveMeta();P={ch,lvl:1,xp:0,gold:20*(m.mgd||0),ws:[{id:CH[ch].w,l:1,q:0}],ps:{},rr:1+(m.mrr||0),rev:m.mrev?1:0,buys:{},kills:0,time:0,hp:1,ul:0,pity:0};recalc();P.hp=P.mhp;startZone()}
-function contRun(){const r=META.run;G={z:r.z,ngp:r.ngp||0,df:r.df>=0&&r.df<=3?r.df|0:1,end:r.end?1:0,w:Math.max(1,r.w|0)};P=JSON.parse(JSON.stringify(r.P));P.ul=+P.ul||0;P.pity=+P.pity||0;recalc();startZone()}
-function snapRun(){META.run={z:G.z,ngp:G.ngp,df:G.df,end:G.end,w:G.w,P:{ch:P.ch,lvl:P.lvl,xp:P.xp,gold:P.gold,ws:P.ws.map(w=>w.m?{id:w.id,l:w.l,q:w.q||0,m:w.m}:{id:w.id,l:w.l,q:w.q||0}),ul:P.ul|0,pity:P.pity|0,ps:P.ps,cur:P.cur||0,rr:P.rr,rev:P.rev,buys:P.buys,kills:P.kills,time:P.time,hp:P.hp}};saveMeta()}
+function contRun(){const r=META.run;G={z:r.z,ngp:r.ngp||0,df:r.df>=0&&r.df<=3?r.df|0:1,end:r.end?1:0,w:Math.max(1,r.w|0),zo:+r.zo||0};P=JSON.parse(JSON.stringify(r.P));P.ul=+P.ul||0;P.pity=+P.pity||0;recalc();startZone()}
+function snapRun(){META.run={z:G.z,ngp:G.ngp,df:G.df,end:G.end,w:G.w,zo:G.zo||0,P:{ch:P.ch,lvl:P.lvl,xp:P.xp,gold:P.gold,ws:P.ws.map(w=>w.m?{id:w.id,l:w.l,q:w.q||0,m:w.m}:{id:w.id,l:w.l,q:w.q||0}),ul:P.ul|0,pity:P.pity|0,ps:P.ps,cur:P.cur||0,rr:P.rr,rev:P.rev,buys:P.buys,kills:P.kills,time:P.time,hp:P.hp}};saveMeta()}
 function startZone(){if(Zc!==ZN[G.z])fadeStart();Zc=ZN[G.z];ZD=zd();warmZone();if(RS<1){RS=Math.min(1,RS+.15);resize()}PR=Zc.ob.map(n=>MD[n].r);recalc();P.hp=Math.min(P.hp,P.mhp);snapRun();
  Object.assign(P,{x:WW/2,y:WH/2,vx:0,vy:0,r:17,rot:0,at:0,inv:0,dash:0,cd:0,pdi:0,shd:0,ub:0,ubs:0,slw:0,rew:[],tr:[],dh:[],mv:0});P.ws.forEach(w=>{w.t=.6;w.a=0;w.sp=null;w.q=w.q||0});
  en=[];bul=[];eb=[];pt=[];num=[];dr=[];bm=[];ebm=[];pud=[];epud=[];dcl=[];later=[];objs=[];vf=[];bossL=[];corp=[];deb=[];AMB.length=0;
@@ -1532,13 +1533,18 @@ function charCard(end){menuScene();PVS=null;const D=DIFF[META.diff];card(`<div c
 /* --- таблица рекордов бесконечных волн: своя запись хранится на устройстве, общая — в базе страницы --- */
 let DBH=null,UID=null,LBW=0;const esc=s=>String(s).replace(/[&<>"'`]/g,c=>'&#'+c.charCodeAt(0)+';');
 async function lbInit(){try{const c=window.claude;if(!c||!c.use)return;const[d,u]=await Promise.all([c.use('db'),c.use('user')]);if(!d||!u)return;UID=await u.id();if(UID)DBH=d}catch(e){}}
-async function lbSend(){const r=META.rec;if(!DBH||!UID||!r||!META.nick)return;try{await DBH.doc('scores/'+UID).set({nick:META.nick.slice(0,16),wave:r.w|0,diff:r.d|0,ch:String(r.ch),at:Date.now()});LBW=1}catch(e){LBW=-1}}
-async function lbLoad(){if(!DBH)return null;try{const q=await DBH.collection('scores').orderBy('wave','desc').limit(30).get();return q.docs.map(d=>Object.assign({id:d.id},d.data())).filter(r=>r&&typeof r.nick=='string'&&r.wave>=1)}catch(e){return null}}
-function boardCard(back){back=back||title;const mine=()=>META.rec?[{id:UID||'me',nick:META.nick||'Ты',wave:META.rec.w,diff:META.rec.d,ch:META.rec.ch}]:[];
- const rows=l=>l.length?l.map((r,i)=>`<div class="lr ${r.id==(UID||'me')?'me':''}"><i>${i+1}</i><b>${esc(r.nick.slice(0,16))}</b><span>${DIFF[r.diff]?DIFF[r.diff].n:''}${CH[r.ch]?' · '+CH[r.ch].n:''}</span><em>волна ${r.wave|0}</em></div>`).join(''):'<p class="sm">Пока пусто. Запусти бесконечные волны и поставь первый рекорд.</p>';
- card(`<div class="eyebrow">Бесконечные волны</div><h2>Таблица рекордов</h2><div class="nk"><input id="nick" maxlength="16" autocomplete="off" placeholder="Твой ник" value="${esc(META.nick)}"><button class="b ctr" id="nks"><span>Сохранить</span></button></div><div class="lb" id="lb">${rows(mine())}</div><p class="sm" id="lbn">${DBH?'Загружаю общую таблицу…':'Общая таблица в этом окне недоступна, показан только твой рекорд.'}</p>`,
+/* общая таблица: на своём сайте — база Firebase, внутри страницы Claude — её собственная база */
+const FB='https://pelmen-fb1f2-default-rtdb.firebaseio.com/scores',lbOk=r=>r&&typeof r.nick=='string'&&r.wave>=1;
+const myId=()=>UID||META.uid||(META.uid='p'+Math.random().toString(36).slice(2,12)+Date.now().toString(36),saveMeta(),META.uid);
+async function lbSend(){const r=META.rec;if(!r||!META.nick)return;const body={nick:META.nick.slice(0,16),wave:r.w|0,diff:r.d|0,ch:String(r.ch),at:Date.now()};
+ try{if(DBH&&UID)await DBH.doc('scores/'+UID).set(body);else{const q=await fetch(FB+'/'+myId()+'.json',{method:'PUT',body:JSON.stringify(body)});if(!q.ok)throw 0}LBW=1}catch(e){LBW=-1}}
+async function lbLoad(){try{if(DBH){const q=await DBH.collection('scores').orderBy('wave','desc').limit(30).get();return q.docs.map(d=>Object.assign({id:d.id},d.data())).filter(lbOk)}
+  const q=await fetch(FB+'.json?orderBy=%22wave%22&limitToLast=40');if(!q.ok)return null;const o=await q.json()||{};return Object.keys(o).map(k=>Object.assign({id:k},o[k])).filter(lbOk).sort((a,b)=>b.wave-a.wave)}catch(e){return null}}
+function boardCard(back){back=back||title;const DC=['#5fd16a','#aab2bd','#ffb52e','#ff4d5e'],mine=()=>META.rec?[{id:myId(),nick:META.nick||'Ты',wave:META.rec.w,diff:META.rec.d,ch:META.rec.ch}]:[];
+ const rows=l=>l.length?l.map((r,i)=>`<div class="lr ${r.id==myId()?'me':''}"><i>${i+1}</i><b>${esc(r.nick.slice(0,16))}${CH[r.ch]?`<small>${CH[r.ch].n}</small>`:''}</b>${DIFF[r.diff]?`<span style="color:${DC[r.diff]};border-color:${DC[r.diff]}">${DIFF[r.diff].n}</span>`:'<span></span>'}<em>волна ${r.wave|0}</em></div>`).join(''):'<p class="sm">Пока пусто. Запусти бесконечные волны и поставь первый рекорд.</p>';
+ card(`<div class="eyebrow">Бесконечные волны</div><h2>Таблица рекордов</h2><div class="nk"><input id="nick" maxlength="16" autocomplete="off" placeholder="Твой ник" value="${esc(META.nick)}"><button class="b ctr" id="nks"><span>Сохранить</span></button></div><div class="lb" id="lb">${rows(mine())}</div><p class="sm" id="lbn">Загружаю общую таблицу…</p>`,
  [{t:'Назад',cls:'ctr',f:back}],{menu:G.ph=='menu',after(v){const inp=$('nick');$('nks').onclick=async()=>{META.nick=inp.value.trim().slice(0,16);saveMeta();sfx('buy');await lbSend();boardCard(back)};
-  lbLoad().then(l=>{const b=$('lb'),n=$('lbn');if(!b||!n||!l)return;const me=mine()[0];if(me&&!l.some(r=>r.id==me.id)){l.push(me);l.sort((a,b)=>b.wave-a.wave)}b.innerHTML=rows(l);n.textContent=!META.nick?'Впиши ник, чтобы твой рекорд попал в общую таблицу.':LBW<0?'Твой рекорд не записался в общую таблицу: у этого входа нет права записи. Владелец страницы может выдать доступ «Contributor».':'Общая таблица: лучшая волна каждого игрока.'})}})}
+  lbLoad().then(l=>{const b=$('lb'),n=$('lbn');if(!b||!n)return;if(!l){n.textContent='Общая таблица сейчас недоступна, показан только твой рекорд.';return}const me=mine()[0];if(me&&!l.some(r=>r.id==me.id)){l.push(me);l.sort((a,b)=>b.wave-a.wave)}b.innerHTML=rows(l);n.textContent=!META.nick?'Впиши ник, чтобы твой рекорд попал в общую таблицу.':LBW<0?'Твой рекорд не записался в общую таблицу. Проверь интернет и нажми «Сохранить» ещё раз.':'Общая таблица: лучшая волна каждого игрока и сложность, на которой он её взял.'})}})}
 function metaCard(){menuScene();card(`<div class="eyebrow">Навсегда</div><h2>Кухня улучшений</h2>${starChip()}`,
  Object.keys(MU).map(k=>{const u=MU[k],l=META.up[k]||0,c=u[3]*(l+1),mx=l>=u[2];return{t:u[0]+pips(l,u[2]),s:u[1]+(mx?' · максимум':` · ${c} звёзд`),ic:u[4],sz:40,dis:mx||META.stars<c,f(){META.stars-=c;META.up[k]=l+1;saveMeta();sfx('buy');metaCard()}}}).concat([{t:'Назад',cls:'ctr',f:title}]),{menu:1})}
 /* гардероб: у каждого героя классика, собственный цвет и четыре общих обличья */
@@ -1630,7 +1636,7 @@ function shop(){const price=(k,b)=>Math.round(b*Math.pow(1.3,P.buys[k]||0)),up=P
 function deathCard(){const z=G.z,end=G.end,st=runOver(false);card(`<div class="hero">${ic('ghost',110)}</div><div class="eyebrow" style="text-align:center">Тебя съели</div><h2 style="text-align:center">${end&&G.newRec?'Новый рекорд: волна '+G.w:pick(['Недосолен','Не дожевали, но всё же','Смерть на диете, но не сегодня'])}</h2><div class="rule"></div>
  <div class="list"><div>${end?`Волна <b>${G.w}</b> · лучший результат <b>${META.rec?META.rec.w:G.w}</b>`:`Глава <b>${z+1}. ${ZN[z].n}</b>`} · сложность <b>${DF().n.toLowerCase()}</b></div><div>Уровень <b>${P.lvl}</b> · убито <b>${P.kills}</b> · время <b>${P.time/60|0}:${String(P.time%60|0).padStart(2,'0')}</b></div><div>${ic('star',20)} Получено звёзд: <b>${st}</b>. Потрать их на улучшения, героев и скины, они остаются навсегда.</div></div>`,
  [{t:'Ещё забег',cls:'ctr pri',f(){charCard(end)}},...(end?[{t:'Таблица рекордов',cls:'ctr',f(){boardCard()}}]:[]),{t:'Улучшения за звёзды',cls:'ctr',f:metaCard},{t:'В меню',cls:'ctr',f:title}])}
-function finale(){const end=(n,t)=>()=>{const st=runOver(true);P.kills=0;card(`<div class="hero">${ic(heroIc(P.ch),120)}</div><div class="eyebrow" style="text-align:center">Концовка · ${n}</div><p>${t}</p><div class="list"><div>${ic('star',20)} Получено звёзд: <b>${st}</b>. Золотой скин этого героя теперь твой бесплатно.</div></div>`,[{t:'Новая игра+',s:'враги вдвое злее, начинка остаётся',cls:'pri',ic:'wchest',f(){G.ngp++;G.z=0;startZone()}},{t:'В меню',cls:'ctr',f:title}])};
+function finale(){const end=(n,t)=>()=>{const st=runOver(true);P.kills=0;card(`<div class="hero">${ic(heroIc(P.ch),120)}</div><div class="eyebrow" style="text-align:center">Концовка · ${n}</div><p>${t}</p><div class="list"><div>${ic('star',20)} Получено звёзд: <b>${st}</b>. Золотой скин этого героя теперь твой бесплатно.</div></div>`,[{t:'Бесконечные волны',s:'продолжить этим же героем и начинкой; враги сразу как в последней главе',cls:'pri',ic:'skull',f(){G.end=1;G.w=1;G.zo=5;G.z=0;startZone()}},{t:'Новая игра+',s:'враги вдвое злее, начинка остаётся',ic:'wchest',f(){G.ngp++;G.z=0;startZone()}},{t:'В меню',cls:'ctr',f:title}])};
  card(`<div class="dl">${ic('b_hand',100)}<div><div class="eyebrow">Финал</div><p>Рука разжимается. Повар наклоняется к столу: «Рецепт велит отпустить. Но Рецепт писал я. Чего ты сам хочешь, сорок первый?» Солонка молчит. Впервые.</p></div></div>`,[
  {t:'Уйти и забрать Солонку',ic:'salt',f:end('Сорок первый','Ты катишься к краю стола. Солонка катится рядом. «Куда?» — «Не знаю. В этом и смысл». Позади Повар рвёт Рецепт и впервые за жизнь заказывает пиццу.')},
  {t:'Лечь в тарелку самому',ic:'o_plate',f:end('Канон','Ты ложишься в сметану. Не потому что привели, а потому что решил. Солонка плачет солью. Повар ест молча и больше никогда не лепит сорок первого.')},
